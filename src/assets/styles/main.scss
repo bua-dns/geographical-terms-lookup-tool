@@ -1,0 +1,112 @@
+
+#app {
+  margin: 0 auto;
+  padding: 2rem;
+  font-weight: normal;
+  @media screen and (max-width: 768px) {
+    padding: .5rem;
+    
+  }
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+strong {
+  font-weight: bold;
+}
+
+body {
+  background-image: url("@/assets/images/hg-anatomy.JPG");
+  background-color: rgb(181, 197, 209);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+  min-height: 100vh;
+  @media (max-width: 768px) {
+    background-image: url("@/assets/images/hg-anatomy_responsive.JPG");
+  }
+}
+
+.submit-button {
+  padding: 0.4rem 0.75rem;
+  border: none;
+  background-color: var(--button-color);
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+  margin-left: 0.25rem;
+
+  &:hover {
+    background-color: #0056b3;
+  }
+
+  &.selected {
+    background-color: #ccc;
+    cursor: default;
+  }
+}
+
+
+.dev-output {
+  background-color: #fff;
+}
+
+// new styles
+
+
+
+
+.copy-button {
+  width: 2rem;
+  height: 2rem;
+  background-color: #fff;
+  border: 1.5px solid #000;
+  border-radius: 4px;
+  padding: 0.1rem;
+  margin-left: 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.25s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background-color: #7892ae;
+    border-color: #7892ae;
+  }
+
+  img {
+    width: 1.0rem;
+    height: 1.0rem;
+    pointer-events: none;
+  }
+}
+.clear-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #fff;
+  border: 2px solid #000;
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease-in-out;
+
+  &:hover {
+    background-color: #7892ae;
+    border-color: #7892ae;
+  }
+
+  img {
+    width: 1.2rem;
+    height: 1.2rem;
+    pointer-events: none;
+  }
+}

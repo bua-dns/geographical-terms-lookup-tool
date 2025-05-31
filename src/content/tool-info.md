@@ -1,14 +1,10 @@
 ## Hinweise zur Verwendung
 
-Die Abfrage der Referenzdaten erfolgt auf der Grundlage eines aggregierten Datenpools. Dieser verwendet:
+Diese Anwendung erlaubt die gezielte Suche nach Ortsnamen und die Anzeige zugehöriger GeoNames-IDs.
 
-* Wikidata
-* UBERON-Daten
-* Terminologia Antaomica 2
+Die Abfrage erfolgt über zwei Schritte:
 
-Die verwendete Datenaggregation kann unter
+* **Vorschläge** werden über die [Wikidata Search API](https://www.wikidata.org/w/api.php) (wbsearchentities) geladen.
+* Für die **Anreicherung** (z. B. mit GeoNames-ID – P1566) wird eine **SPARQL-Anfrage** an den Wikidata-Endpunkt gesendet.
 
-<a href="https://public-files.berlin-university-collections.de/Taxonomies/anatomical-terms.json" target="_blank" alt="link to dataset used in lookup tool">https://public-files.berlin-university-collections.de/Taxonomies/anatomical-terms.json</a>
-
-eingesehen werden.
-
+Es handelt sich um eine **live-basierte Lösung**: Es wird keine statische Datensammlung verwendet. Die Daten werden in Echtzeit aus Wikidata abgerufen.

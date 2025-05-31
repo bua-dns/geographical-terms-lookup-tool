@@ -1,20 +1,24 @@
-# Anatomical Term Lookup Tool
+# GeoNames Lookup Tool
 
-This web-based tool allows users to search for anatomical terms using a type-ahead input box that suggests results based on a pre-aggregated dataset. Upon selecting a term, users are presented with reference data identifiers, each of which can be copied to the clipboard with a single click.
+This web-based tool allows users to search for **place names** using a type-ahead input box that dynamically queries the **Wikidata Search API**. Upon selecting a place, the tool enriches the result using a SPARQL query to retrieve related metadata — specifically the **GeoNames ID** (P1566) — and presents it for further use, including clipboard copying.
 
-> This project is part of the **Data Management Lab** of the  
+> Developed as part of the **Data Management Lab** of the  
 > [Digitales Netzwerk Sammlungen](https://berlin-university-collections.de/)
 
-The tool uses a prebuilt taxonomy file from the [Berlin University Collections public data repository](https://public-files.berlin-university-collections.de/Taxonomies/anatomical-terms.json).
-
 💻 A demo version is available at:  
-> [https://bua-dns.github.io/anatomy-terms-lookup-tool/](https://bua-dns.github.io/anatomy-terms-lookup-tool/)
+> [https://bua-dns.github.io/geonames-lookup-tool/](https://bua-dns.github.io/geonames-lookup-tool/)
+
+---
 
 ## ✨ Features
 
-- 🔎 **Live search with autosuggestions** based on anatomical terms
-- 📋 **Display of reference IDs** (UBERON, TA2, Wikidata)
-- ✅ **Clipboard buttons** to copy each reference ID easily
+- 🔍 **Live search with autosuggestions** via the Wikidata Search API
+- 🌐 **GeoNames ID lookup** using SPARQL enrichment for selected results
+- 📋 **One-click copy buttons** for GeoNames IDs
+- 💬 **Integrated markdown help and usage hints**
+- ⚡ Built with modern frontend tools for fast performance
+
+---
 
 ## 📦 Installation
 
@@ -23,32 +27,47 @@ pnpm install
 pnpm run dev
 ```
 
+---
+
 ## 📁 Project Structure
 
-- `App.vue`: Root component that handles loading the JSON and displaying the main layout
-- `components/SearchBox.vue`: Input field with autosuggest and selection handling
+- `App.vue`: Root component managing layout and display logic
+- `components/SearchBox.vue`: Input with live suggestions
+- `stores/useTermsStore.js`: Shared store for selected term
+- `use/useCallWikidataSearchApi.js`: Handles search and enrichment
+- `content/tool-info.md`: User instructions (rendered in sidebar)
 
-## 📄 Data Source
+---
 
-The anatomical term suggestions are pulled from the following static JSON file:
+## 📄 Data Source and Enrichment
 
-> [`anatomical-terms.json`](https://public-files.berlin-university-collections.de/Taxonomies/anatomical-terms.json)
+The tool uses **live queries to Wikidata**, not a prebuilt dataset.
 
-This file contains curated anatomical terms with associated identifiers used for matching and display.
+### APIs used:
+- **Wikidata Search API** (`action=wbsearchentities`)
+- **Wikidata SPARQL endpoint** for enrichment (`wdt:P1566` for GeoNames ID)
+
+---
 
 ## 📋 Example Use
 
-1. Start typing an anatomical term (e.g., `heart`)
-2. Select a suggestion from the list
-3. View the associated UBERON, TA2, and Wikidata identifiers
-4. Click the copy button to copy any ID
+1. Start typing a place name (e.g., `Berlin`, `Prague`, `Mailand`)
+2. Select a matching suggestion from the list
+3. View the enriched metadata such as GeoNames ID
+4. Use the copy button to store the ID for further reference
+
+---
 
 ## 🛠 Technologies Used
 
 - [Vue 3](https://vuejs.org/)
+- [Pinia](https://pinia.vuejs.org/)
 - [Vite](https://vitejs.dev/)
-- [highlight.js](https://highlightjs.org/) for code highlighting in Markdown
-- [Markdown-it](https://github.com/markdown-it/markdown-it) for Markdown rendering
+- [Wikidata APIs](https://www.wikidata.org/wiki/Wikidata:Data_access)
+- [Markdown-it](https://github.com/markdown-it/markdown-it)
+- [highlight.js](https://highlightjs.org/)
+
+---
 
 ## 📜 License
 

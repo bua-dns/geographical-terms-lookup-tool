@@ -2,20 +2,13 @@
 import { ref, onMounted } from "vue"
 import SearchBox from './components/SearchBox.vue'
 import { useTermsStore } from './stores/useTermsStore.js'
-import { fetchWikidataSearchResults } from './use/useCallWikidataSearchApi.js'
 import MarkdownRenderer from './components/MarkdownRenderer.vue'
 import markdownRaw from './content/tool-info.md?raw'
 
-const toolInfo = markdownRaw;
+const toolInfo = markdownRaw
 
-const wikidataResults = ref([]);
-
+const searchBoxRef = ref(null)
 const termsStore = useTermsStore()
-
-onMounted(async () => {
-  termsStore.fetchTerms()
-  wikidataResults.value = await fetchWikidataSearchResults("berlin");
-})
 
 function copyToClipboard(text) {
   navigator.clipboard.writeText(text).then(() => {
@@ -27,21 +20,18 @@ function copyToClipboard(text) {
 
 function clearSelectedTerm() {
   termsStore.setSelectedTerm(null)
+  searchBoxRef.value?.resetSearch()
 }
-
 </script>
 
 <template>
   <header>
-    <h1>Referenzdaten-Lookup</h1>
+    <h1>Referenzdaten-Lookup: Ortsnamen</h1>
   </header>
+
   <div class="content-container">
     <aside>
-      <SearchBox
-        :terms="termsStore.terms"
-        labelKey="info_label"
-        filterKey="look_up"
-      />
+      <SearchBox ref="searchBoxRef" />
       <div class="info-box">
         <MarkdownRenderer :content="toolInfo" />
       </div>
@@ -49,82 +39,11 @@ function clearSelectedTerm() {
 
     <main>
       <div class="hint" v-if="!termsStore.selectedTerm">
-        Antomischen Begriff auswählen, um Details anzuzeigen.
+        Ortsnamen auswählen, um Details anzuzeigen.
       </div>
-      <div class="wikidata-test-output">
-        <h2>Wikidata Test Output</h2>
-        <pre>{{ wikidataResults }}</pre>
-        <ul>
-          <li v-for="result in wikidataResults" :key="result.id">
-            <strong>{{ result.label }}</strong> ({{ result.id }})
-            <div v-if="result.description" style="font-size: 0.9rem; color: #666;">
-              {{ result.description }}
-            </div>
-          </li>
-        </ul>
-      </div>
+      <pre v-if="false">Debug selectedTerm: {{ termsStore.selectedTerm }}</pre>
       <div class="selected-term" v-if="termsStore.selectedTerm">
-        <h1>{{ termsStore.selectedTerm.info_label }}</h1>
-
-        <div class="term-id">
-          <span class="label">Terminologia-Anatomica-2-Id:</span>
-          <div class="id-group">
-            <a
-              :href="`https://ta2viewer.openanatomy.org/?id=${termsStore.selectedTerm.ta2_id}`"
-              target="_blank"
-              class="id-link"
-            >
-              {{ termsStore.selectedTerm.ta2_id }}
-            </a>
-            <button
-              @click="copyToClipboard(termsStore.selectedTerm.ta2_id)"
-              class="copy-button"
-              title="Copy ID"
-            >
-              <img src="./assets/icons/copy.svg" alt="Copy ID" />
-            </button>
-          </div>
-        </div>
-
-        <div class="term-id">
-          <span class="label">UBERON-Id:</span>
-          <div class="id-group">
-            <a
-              :href="`http://purl.obolibrary.org/obo/UBERON_${termsStore.selectedTerm.uberon_id}`"
-              target="_blank"
-              class="id-link"
-            >
-              {{ termsStore.selectedTerm.uberon_id }}
-            </a>
-            <button
-              @click="copyToClipboard(termsStore.selectedTerm.uberon_id)"
-              class="copy-button"
-              title="Copy UBERON ID"
-            >
-              <img src="./assets/icons/copy.svg" alt="Copy ID" />
-            </button>
-          </div>
-        </div>
-
-        <div class="term-id">
-          <span class="label">Wikidata-Id:</span>
-          <div class="id-group">
-            <a
-              :href="`https://www.wikidata.org/wiki/${termsStore.selectedTerm.wikidata_item.replace('http://www.wikidata.org/entity/', '')}`"
-              target="_blank"
-              class="id-link"
-            >
-              {{ termsStore.selectedTerm.wikidata_item.replace('http://www.wikidata.org/entity/', '') }}
-            </a>
-            <button
-              @click="copyToClipboard(termsStore.selectedTerm.wikidata_item.replace('http://www.wikidata.org/entity/', ''))"
-              class="copy-button"
-              title="Copy Wikidata ID"
-            >
-              <img src="./assets/icons/copy.svg" alt="Copy ID" />
-            </button>
-          </div>
-        </div>
+        <pre>{{ termsStore.selectedTerm }}</pre>
       </div>
 
       <div class="controls">
@@ -141,14 +60,12 @@ function clearSelectedTerm() {
   </div>
 </template>
 
-
 <style lang="scss">
 @use './assets/styles/base.scss' as *;
 @use './assets/styles/main.scss' as *;
 
 main, aside {
   min-height: calc(100vh - 8rem);
-
 }
 main, aside, header {
   background-color: hsla(0, 0%, 100%, .9);
@@ -163,7 +80,6 @@ header {
     margin-bottom: 1.5rem;
     @media screen and (max-width: 768px) {
       font-size: 1.125rem;
-      
     }
   }
 }
@@ -172,7 +88,6 @@ header {
   display: flex;
   gap: 2rem;
   flex-direction: row;
-
 
   aside {
     flex: 0 0 24rem;
@@ -327,4 +242,3 @@ header {
   }
 }
 </style>
-

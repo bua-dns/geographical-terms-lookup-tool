@@ -17,9 +17,6 @@ export const useTermsStore = defineStore('terms', () => {
     selectedTerm.value = newTerm
   }
 
-  async function fetchTerms() {
-    terms.value = await useFetchAnatomyTerms()
-  }
 
   return {
     terms,
@@ -27,6 +24,5 @@ export const useTermsStore = defineStore('terms', () => {
     selectedTerm,
     setSelectedTerms,
     setSelectedTerm,
-    fetchTerms,
   }
 })

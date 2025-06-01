@@ -1,8 +1,7 @@
-// /use/useFetchWikidataStatements.js
-
 /**
  * Fetches statements for multiple Wikidata Q-IDs via SPARQL.
  * Supports multi-valued properties (e.g., geonamesId).
+ * Retrieves German and English labels into `label_de` and `label_en`.
  * 
  * @param {string[]} qids - e.g. ["Q64", "Q90"]
  * @param {string[]} propertyIds - e.g. ["P1566", "P646"]
@@ -11,15 +10,21 @@
 export async function fetchWikidataStatements(qids, propertyIds) {
   if (!qids.length || !propertyIds.length) return [];
 
-  // Build SPARQL query
   const valuesBlock = qids.map(id => `wd:${id}`).join(' ');
   const optionalBlocks = propertyIds.map(pid => `OPTIONAL { ?item wdt:${pid} ?${pid} }`).join('\n  ');
 
   const query = `
-    SELECT ?item ?itemLabel ${propertyIds.map(pid => `?${pid}`).join(' ')} WHERE {
+    SELECT ?item ?itemLabel_de ?itemLabel_en ${propertyIds.map(pid => `?${pid}`).join(' ')} WHERE {
       VALUES ?item { ${valuesBlock} }
       ${optionalBlocks}
-      SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+      SERVICE wikibase:label { 
+        bd:serviceParam wikibase:language "de" .
+        ?item rdfs:label ?itemLabel_de .
+      }
+      SERVICE wikibase:label { 
+        bd:serviceParam wikibase:language "en" .
+        ?item rdfs:label ?itemLabel_en .
+      }
     }
   `;
 
@@ -39,15 +44,20 @@ export async function fetchWikidataStatements(qids, propertyIds) {
 
     const data = await response.json();
 
-    // Group results by Q-ID, support multiple values per property
     const grouped = new Map();
 
     data.results.bindings.forEach(binding => {
       const qid = binding.item.value.split('/').pop();
-      const label = binding.itemLabel?.value || null;
+      const label_de = binding.itemLabel_de?.value || null;
+      const label_en = binding.itemLabel_en?.value || null;
 
       if (!grouped.has(qid)) {
-        grouped.set(qid, { id: qid, label, ...Object.fromEntries(propertyIds.map(pid => [pid, []])) });
+        grouped.set(qid, {
+          id: qid,
+          label_de,
+          label_en,
+          ...Object.fromEntries(propertyIds.map(pid => [pid, []]))
+        });
       }
 
       const entry = grouped.get(qid);

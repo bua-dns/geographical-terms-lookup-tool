@@ -1,7 +1,6 @@
 // stores/useTermsStore.js
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { useFetchAnatomyTerms } from '../use/useFetchAnatomyTerms.js'
 
 export const useTermsStore = defineStore('terms', () => {
   const terms = ref([])

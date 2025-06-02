@@ -70,6 +70,12 @@ function clearSelectedTerm() {
                   :link="`https://www.wikidata.org/wiki/${item.wikidataData.id}`"
                 />
                 <IdGroup
+                  v-if="item.wikidataData.gndId"
+                  :id="item.wikidataData.gndId"
+                  label="GND ID"
+                  :link="`https://d-nb.info/gnd/${item.wikidataData.gndId}`"
+                />
+                <IdGroup
                   v-if="item.wikidataData.mindatLocationId"
                   :id="item.wikidataData.mindatLocationId"
                   label="Mindat Location ID"

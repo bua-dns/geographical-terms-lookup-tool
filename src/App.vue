@@ -5,6 +5,7 @@ import { useTermsStore } from './stores/useTermsStore.js'
 import MarkdownRenderer from './components/MarkdownRenderer.vue'
 import markdownRaw from './content/tool-info.md?raw'
 import MapView from "./components/MapView.vue"
+import IdGroup from "./components/IdGroup.vue"
 
 // DEV only:
 const showRawData = ref(false)
@@ -55,7 +56,30 @@ function clearSelectedTerm() {
             <h2>{{ item.locationDescription }}</h2>
             <div class="item-content">
               <div class="data-box">
-                Referenzdaten
+                {{ item.geonamesId }}
+                <IdGroup
+                  v-if="item.geonamesId"
+                  :id="item.geonameId"
+                  label="Geonames ID"
+                  :link="`https://www.geonames.org/${item.geonamesData.id}`"
+                />
+                <IdGroup
+                  v-if="item.wikidataData.id"
+                  :id="item.wikidataData.id"
+                  label="Wikidata ID"
+                  :link="`https://www.wikidata.org/wiki/${item.wikidataData.id}`"
+                />
+                <IdGroup
+                  v-if="item.wikidataData.mindatLocationId"
+                  :id="item.wikidataData.mindatLocationId"
+                  label="Mindat Location ID"
+                  :link="`https://www.mindat.org/loc-${item.wikidataData.mindatLocationId}.html`"
+                />
+                <IdGroup
+                  v-if="item.wikidataData.deweyId"
+                  :id="item.wikidataData.deweyId"
+                  label="Dewey Dezimalklassifikation"
+                />
               </div>
               <div class="map-box">
                 <MapView
@@ -142,39 +166,6 @@ header {
 .controls {
   margin-top: 1rem;
 }
-
-.term-id {
-  max-width: 20rem;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.25rem;
-  font-size: 1rem;
-  margin-top: .5rem;
-
-  .label {
-    font-weight: 500;
-  }
-
-  .id-group {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    flex-wrap: nowrap;
-  }
-
-  .id-link {
-    color: #0056b3;
-    text-decoration: none;
-    font-family: monospace;
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-}
-
 .items {
   .item {
     margin-bottom: 1.5rem;

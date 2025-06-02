@@ -5,17 +5,15 @@ import { ref } from 'vue'
 export const useTermsStore = defineStore('terms', () => {
   const terms = ref([])
   const selectedTerms = ref([])
+  const selectedTerm = ref(null)
 
   function setSelectedTerms(newTerms) {
     selectedTerms.value = newTerms
   }
 
-  const selectedTerm = ref(null)
-
   function setSelectedTerm(newTerm) {
     selectedTerm.value = newTerm
   }
-
 
   return {
     terms,

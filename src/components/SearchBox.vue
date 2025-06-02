@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, defineExpose } from 'vue'
+import { ref, watch } from 'vue'
 import { useTermsStore } from '../stores/useTermsStore.js'
 import { fetchWikidataSearchResults } from '../use/useCallWikidataSearchApi.js'
 
@@ -25,14 +25,7 @@ watch(searchTerm, async (newTerm) => {
 
 function selectSuggestion(term) {
   termsStore.setSelectedTerm(term)
-  searchTerm.value = term.label
-  showSuggestions.value = false
-}
-
-function handleBlur() {
-  setTimeout(() => {
-    showSuggestions.value = false
-  }, 150)
+  resetSearch()
 }
 
 function resetSearch() {
@@ -41,9 +34,6 @@ function resetSearch() {
   showSuggestions.value = false
 }
 
-defineExpose({
-  resetSearch
-})
 </script>
 
 <template>

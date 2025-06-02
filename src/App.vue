@@ -7,7 +7,6 @@ import markdownRaw from './content/tool-info.md?raw'
 
 const toolInfo = markdownRaw
 
-const searchBoxRef = ref(null)
 const termsStore = useTermsStore()
 
 function copyToClipboard(text) {
@@ -20,7 +19,6 @@ function copyToClipboard(text) {
 
 function clearSelectedTerm() {
   termsStore.setSelectedTerm(null)
-  searchBoxRef.value?.resetSearch()
 }
 </script>
 
@@ -31,7 +29,7 @@ function clearSelectedTerm() {
 
   <div class="content-container">
     <aside>
-      <SearchBox ref="searchBoxRef" />
+      <SearchBox/>
       <div class="info-box">
         <MarkdownRenderer :content="toolInfo" />
       </div>

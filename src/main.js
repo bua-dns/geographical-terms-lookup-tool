@@ -2,6 +2,8 @@ import './assets/styles/main.scss'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+// import 'leaflet/dist/leaflet.css' // ✅ Leaflet CSS import
+
 
 import App from './App.vue'
 // import router from './router'

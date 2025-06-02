@@ -4,6 +4,7 @@ import SearchBox from './components/SearchBox.vue'
 import { useTermsStore } from './stores/useTermsStore.js'
 import MarkdownRenderer from './components/MarkdownRenderer.vue'
 import markdownRaw from './content/tool-info.md?raw'
+import MapView from "./components/MapView.vue"
 
 // DEV only:
 const showRawData = ref(false)
@@ -48,11 +49,22 @@ function clearSelectedTerm() {
       <div class="selected-term" v-if="selectedTerm">
         <div class="items">
           <div class="item"
-            v-for="(item, index) in selectedTerm"
-            :key="index"
+          v-for="(item, index) in selectedTerm"
+          :key="index"
           >
             <h2>{{ item.locationDescription }}</h2>
-
+            <div class="item-content">
+              <div class="data-box">
+                Referenzdaten
+              </div>
+              <div class="map-box">
+                <MapView
+                  :lat="Number(item.geonamesData.lat)"
+                  :lng="Number(item.geonamesData.lng)"
+                  :label="item.locationDescription"
+                />
+              </div>
+            </div>
           </div>
         </div>
         <div @click="showRawData = !showRawData" class="raw-data-toggle">
@@ -80,6 +92,7 @@ function clearSelectedTerm() {
 <style lang="scss">
 @use './assets/styles/base.scss' as *;
 @use './assets/styles/main.scss' as *;
+@import 'leaflet/dist/leaflet.css';
 
 main, aside {
   min-height: calc(100vh - 8rem);
@@ -164,9 +177,37 @@ header {
 
 .items {
   .item {
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
+
+    .item-content {
+      display: flex;
+      justify-content: space-between; // Ensures left-right layout with spacing
+      align-items: flex-start;
+      gap: 1rem; // Optional: space between boxes
+
+      .data-box {
+        flex: 1; // takes remaining space
+        padding: 0.75rem;
+        background-color: #f8f9fa;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 0.875rem;
+        word-break: break-word; // prevent overflow
+      }
+
+      .map-box {
+        width: 36rem;
+        height: 24remx;
+        border-radius: 8px;
+        overflow: hidden;
+
+        // optional: box shadow for visual hierarchy
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+    }
   }
 }
+
 
 .search {
   position: relative;

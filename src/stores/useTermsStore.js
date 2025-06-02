@@ -5,12 +5,7 @@ import { useMapTerm } from '@/use/useMapTerm'
 
 export const useTermsStore = defineStore('terms', () => {
   const terms = ref([])
-  const selectedTerms = ref([])
   const selectedTerm = ref(null)
-
-  function setSelectedTerms(newTerms) {
-    selectedTerms.value = newTerms
-  }
 
   function setSelectedTerm(newTerm) {
     if (!newTerm) {
@@ -22,9 +17,7 @@ export const useTermsStore = defineStore('terms', () => {
 
   return {
     terms,
-    selectedTerms,
     selectedTerm,
-    setSelectedTerms,
     setSelectedTerm,
   }
 })

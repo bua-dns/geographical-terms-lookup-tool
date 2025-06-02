@@ -1,9 +1,12 @@
 <script setup>
-import { computed } from "vue"
+import { ref, computed } from "vue"
 import SearchBox from './components/SearchBox.vue'
 import { useTermsStore } from './stores/useTermsStore.js'
 import MarkdownRenderer from './components/MarkdownRenderer.vue'
 import markdownRaw from './content/tool-info.md?raw'
+
+// DEV only:
+const showRawData = ref(false)
 
 const toolInfo = markdownRaw
 
@@ -41,9 +44,23 @@ function clearSelectedTerm() {
       <div class="hint" v-if="!selectedTerm">
         Ortsnamen auswählen, um Details anzuzeigen.
       </div>
-      <pre v-if="false">Debug selectedTerm: {{ termsStore.selectedTerm }}</pre>
+      
       <div class="selected-term" v-if="selectedTerm">
-        <pre>{{ selectedTerm }}</pre>
+        <div class="items">
+          <div class="item"
+            v-for="(item, index) in selectedTerm"
+            :key="index"
+          >
+            <h2>{{ item.locationDescription }}</h2>
+
+          </div>
+        </div>
+        <div @click="showRawData = !showRawData" class="raw-data-toggle">
+          <span v-if="showRawData">-</span>
+          <span v-else>+</span>
+          <span>Rohdaten anzeigen</span>
+        </div>
+        <pre v-if="showRawData">{{ selectedTerm }}</pre>
       </div>
 
       <div class="controls">
@@ -68,7 +85,7 @@ main, aside {
   min-height: calc(100vh - 8rem);
 }
 main, aside, header {
-  background-color: hsla(0, 0%, 100%, .9);
+  background-color: hsla(0, 0%, 100%, .94);
   padding: 1.25rem;
   border-radius: 4px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -239,6 +256,25 @@ header {
     .term-id {
       max-width: 100%;
     }
+  }
+}
+
+//DEV only
+.raw-data-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 0.5rem;
+  width: 13rem;
+  padding: 0.25 0.5rem;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  font-size: 1.25rem;
+  color: #888;
+
+  &:hover {
+    border-color: #333;
+    color: #333;
   }
 }
 </style>

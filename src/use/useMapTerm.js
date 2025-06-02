@@ -1,4 +1,4 @@
-export function useMapTerm(term) {
+export async function useMapTerm(term) {
     if (!term.geonamesId || !term.geonamesId.length) {
         return term;
     }

@@ -7,12 +7,12 @@ export const useTermsStore = defineStore('terms', () => {
   const terms = ref([])
   const selectedTerm = ref(null)
 
-  function setSelectedTerm(newTerm) {
+  async function setSelectedTerm(newTerm) {
     if (!newTerm) {
       selectedTerm.value = null
       return
     }
-    selectedTerm.value = useMapTerm(newTerm)
+    selectedTerm.value = await useMapTerm(newTerm)
   }
 
   return {

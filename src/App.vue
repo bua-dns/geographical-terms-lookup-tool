@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue"
+import { computed } from "vue"
 import SearchBox from './components/SearchBox.vue'
 import { useTermsStore } from './stores/useTermsStore.js'
 import MarkdownRenderer from './components/MarkdownRenderer.vue'
@@ -8,6 +8,8 @@ import markdownRaw from './content/tool-info.md?raw'
 const toolInfo = markdownRaw
 
 const termsStore = useTermsStore()
+
+const selectedTerm = computed(() => termsStore.selectedTerm)
 
 function copyToClipboard(text) {
   navigator.clipboard.writeText(text).then(() => {
@@ -36,12 +38,12 @@ function clearSelectedTerm() {
     </aside>
 
     <main>
-      <div class="hint" v-if="!termsStore.selectedTerm">
+      <div class="hint" v-if="!selectedTerm">
         Ortsnamen auswählen, um Details anzuzeigen.
       </div>
       <pre v-if="false">Debug selectedTerm: {{ termsStore.selectedTerm }}</pre>
-      <div class="selected-term" v-if="termsStore.selectedTerm">
-        <pre>{{ termsStore.selectedTerm }}</pre>
+      <div class="selected-term" v-if="selectedTerm">
+        <pre>{{ selectedTerm }}</pre>
       </div>
 
       <div class="controls">

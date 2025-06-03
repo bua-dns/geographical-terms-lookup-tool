@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 
 
-const isExpanded = ref(false)
+const isExpanded = ref(true)
 const toggleContent = () => {
   isExpanded.value = !isExpanded.value
 }
@@ -67,21 +67,5 @@ const toggleContent = () => {
   }
 }
 // animation for expanding/collapsing
-.collapse-enter-active,
-.collapse-leave-active {
-  transition: max-height 0.3s ease, opacity 0.3s ease;
-  overflow: hidden;
-}
 
-.collapse-enter-from,
-.collapse-leave-to {
-  max-height: 0;
-  opacity: 0;
-}
-
-.collapse-enter-to,
-.collapse-leave-from {
-  max-height: 500px; // Adjust if needed
-  opacity: 1;
-}
 </style>

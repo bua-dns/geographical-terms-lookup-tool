@@ -2,19 +2,15 @@
 import { ref, computed } from "vue"
 import SearchBox from './components/SearchBox.vue'
 import { useTermsStore } from './stores/useTermsStore.js'
-import MarkdownRenderer from './components/MarkdownRenderer.vue'
-import markdownRaw from './content/tool-info.md?raw'
 import MapView from "./components/MapView.vue"
 import IdGroup from "./components/IdGroup.vue"
-import InfoBox from "./components/InfoBox.vue"
 import BooleanSwitch from "./components/BooleanSwitch.vue"
+import Header from "./components/Header.vue"
 
 // DEV only:
 const showRawData = ref(false)
 
 const copyIdOnly = ref(false) // This is used to toggle between copying full URI or just ID
-
-const toolInfo = markdownRaw
 
 const termsStore = useTermsStore()
 
@@ -48,22 +44,25 @@ function clearSelectedTerm() {
 </script>
 
 <template>
-  <header>
+  <!-- <header>
     <h1>Referenzdaten-Lookup: Ortsnamen</h1>
-  </header>
+    <div class="info">
+      <InfoBox>
+      <template #label>
+        <h2>Über dieses Tool</h2>
+      </template>
 
+      <template #content>
+        
+      </template>
+    </InfoBox>
+    </div>
+    
+  </header> -->
+  <Header />
   <div class="content-container">
     <aside>
       <SearchBox/>
-      <InfoBox>
-        <template #label>
-          <h2>Über dieses Tool</h2>
-        </template>
-
-        <template #content>
-          <MarkdownRenderer :content="toolInfo" />
-        </template>
-      </InfoBox>
       <div class="listing" v-if="termsStore.itemsList.length > 0">
         <h3>Ortsliste zum Export</h3>
         <div class="download-list">
@@ -101,7 +100,7 @@ function clearSelectedTerm() {
     </aside>
 
     <main>
-      <div class="controls">
+      <div class="controls" v-if="selectedTerm">
         <div class="boolean-switch-container">
           <BooleanSwitch v-model="copyIdOnly" value="" />
           <div class="option">Nur ID kopieren</div>
@@ -208,12 +207,23 @@ main, aside, header {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 header {
+  display: flex;
+  justify-content: space-between;
   margin-bottom: 1.0rem;
   h1 {
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
+    font-size: 1.75rem;
+    margin-bottom: .5rem;
     @media screen and (max-width: 768px) {
       font-size: 1.125rem;
+    }
+  }
+  .info {
+    flex: 0 0 18rem;
+    max-width: 18rem;
+    margin-left: 1rem;
+    @media screen and (max-width: 768px) {
+      flex: 1;
+      max-width: none;
     }
   }
 }
@@ -244,7 +254,7 @@ header {
 }
 
 .controls {
-  margin-top: 1rem;
+  margin: 1rem 0;
   .boolean-switch-container {
     display: flex;
     align-items: center;

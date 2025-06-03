@@ -1,5 +1,3 @@
-## Hinweise zur Verwendung
-
 Diese Anwendung erlaubt die gezielte Suche nach Ortsnamen und die Anzeige zugehöriger GeoNames-IDs.
 
 Die Abfrage erfolgt über zwei Schritte:

@@ -6,6 +6,7 @@ import MarkdownRenderer from './components/MarkdownRenderer.vue'
 import markdownRaw from './content/tool-info.md?raw'
 import MapView from "./components/MapView.vue"
 import IdGroup from "./components/IdGroup.vue"
+import InfoBox from "./components/InfoBox.vue"
 
 // DEV only:
 const showRawData = ref(false)
@@ -37,9 +38,15 @@ function clearSelectedTerm() {
   <div class="content-container">
     <aside>
       <SearchBox/>
-      <div class="info-box">
-        <MarkdownRenderer :content="toolInfo" />
-      </div>
+      <InfoBox>
+        <template #label>
+          <h2>Über dieses Tool</h2>
+        </template>
+
+        <template #content>
+          <MarkdownRenderer :content="toolInfo" />
+        </template>
+      </InfoBox>
     </aside>
 
     <main>

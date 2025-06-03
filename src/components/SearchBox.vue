@@ -23,6 +23,12 @@ watch(searchTerm, async (newTerm) => {
   showSuggestions.value = true
 })
 
+const handleInputClick = () => {
+  if (searchTerm.value === '') {
+    termsStore.setSelectedTerm(null)
+  }
+}
+
 function selectSuggestion(term) {
   termsStore.setSelectedTerm(term)
   resetSearch()
@@ -42,8 +48,7 @@ function resetSearch() {
       type="text"
       v-model="searchTerm"
       placeholder="Search Wikidata..."
-      @focus="showSuggestions = true"
-      @blur="handleBlur"
+      @click="handleInputClick"
     />
 
     <ul v-if="showSuggestions && suggestions.length > 0" class="suggestions">

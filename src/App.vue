@@ -112,7 +112,7 @@ function clearSelectedTerm() {
         <pre v-if="showRawData">{{ selectedTerm }}</pre>
       </div>
 
-      <div class="controls">
+      <div class="controls" v-if="false">
         <button
           v-if="termsStore.selectedTerm"
           @click="clearSelectedTerm"

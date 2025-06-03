@@ -1,5 +1,7 @@
 export async function useFetchGeonamesDetails(geonameId) {
-  const url = `http://localhost:3000/api/geonamesbyid?geonameId=${encodeURIComponent(geonameId)}`
+  // const baseUrl = 'https://berlin-university-collections.de/'
+  const baseUrl = 'http://localhost:3000'
+  const url = `${baseUrl}/api/geonamesbyid?geonameId=${encodeURIComponent(geonameId)}`
 
   try {
     const response = await fetch(url)

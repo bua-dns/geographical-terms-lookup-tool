@@ -12,8 +12,20 @@ const props = defineProps({
   link: {
     type: String,
     required: false
+  },
+  copyIdOnly: {
+    type: Boolean,
+    default: false
   }
 })
+
+function getCopyContent() {
+  if (props.copyIdOnly) {
+    return props.id
+  } else {
+    return props.link || props.id
+  }
+}
 
 function copyToClipboard(text) {
   navigator.clipboard.writeText(text).then(() => {
@@ -36,12 +48,12 @@ function copyToClipboard(text) {
         target="_blank"
         class="id-link"
         >
-        {{ id }}
+        {{ getCopyContent() }}
         </a>
     </template>
     <button
-      @click="copyToClipboard(id)"
-      class="copy-button"
+      @click="copyToClipboard(getCopyContent())"
+      class="icon-button"
       title="Copy Wikidata ID"
     >
       <img src="../assets/icons/copy.svg" alt="Copy ID" />
@@ -67,12 +79,4 @@ function copyToClipboard(text) {
   text-decoration: underline;
 }
 
-.copy-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  display: flex;
-  align-items: center;
-}
 </style>

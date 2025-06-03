@@ -7,13 +7,30 @@ import markdownRaw from './content/tool-info.md?raw'
 import MapView from "./components/MapView.vue"
 import IdGroup from "./components/IdGroup.vue"
 import InfoBox from "./components/InfoBox.vue"
+import BooleanSwitch from "./components/BooleanSwitch.vue"
 
 // DEV only:
 const showRawData = ref(false)
 
+const copyIdOnly = ref(false) // This is used to toggle between copying full URI or just ID
+
 const toolInfo = markdownRaw
 
 const termsStore = useTermsStore()
+
+function addToItemsList(item) {
+  termsStore.addToItemsList(item)
+}
+function removeFromList(item) {
+  termsStore.removeFromList(item)
+}
+function toggleListItem(item) {
+  if (termsStore.isInList(item)) {
+    removeFromList(item)
+  } else {
+    addToItemsList(item)
+  }
+}
 
 const selectedTerm = computed(() => termsStore.selectedTerm)
 
@@ -47,9 +64,49 @@ function clearSelectedTerm() {
           <MarkdownRenderer :content="toolInfo" />
         </template>
       </InfoBox>
+      <div class="listing" v-if="termsStore.itemsList.length > 0">
+        <h3>Ortsliste zum Export</h3>
+        <div class="download-list">
+          <button
+            class="icon-button"
+            @click="downloadList(item)"
+            title="Download List"
+          >
+            <img src="./assets/icons/download.svg" alt="Remove from list" />
+          </button>
+          <span>Liste herunterladen</span>
+        </div>
+        <div class="items-list">
+          <div
+            class="item"
+            v-for="(item, index) in termsStore.itemsList"
+            :key="index"
+          >
+            <div class="item-content">
+              <div class="item-title">
+                <span class="label">{{ item.infoLabel }}</span>
+                <span class="description">{{ item.locationDescription }}</span>
+              </div>
+              <button
+                class="icon-button"
+                @click="toggleListItem(item)"
+                title="Remove from list"
+              >
+                <img src="./assets/icons/x-circle.svg" alt="Remove from list" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </aside>
 
     <main>
+      <div class="controls">
+        <div class="boolean-switch-container">
+          <BooleanSwitch v-model="copyIdOnly" value="" />
+          <div class="option">Nur ID kopieren</div>
+        </div>
+      </div>
       <div class="hint" v-if="!selectedTerm">
         Ortsnamen auswählen, um Details anzuzeigen.
       </div>
@@ -61,37 +118,47 @@ function clearSelectedTerm() {
           :key="index"
           >
             <h2>{{ item.locationDescription }}</h2>
+            <div class="add-to-list">
+              <button class="icon-button" @click="addToItemsList(item)">
+                <img src="./assets/icons/shopping-cart.svg" alt="Copy ID" /></button>
+              <span>Zur Liste hinzufügen</span>
+            </div>
             <div class="item-content">
               <div class="data-box">
                 {{ item.geonamesId }}
                 <IdGroup
-                  v-if="item.geonamesId"
+                  v-if="item.geonameId"
                   :id="item.geonameId"
                   label="Geonames ID"
-                  :link="`https://www.geonames.org/${item.geonamesData.id}`"
+                  :link="`https://www.geonames.org/${item.geonameId}`"
+                  :copyIdOnly
                 />
                 <IdGroup
                   v-if="item.wikidataData.id"
                   :id="item.wikidataData.id"
                   label="Wikidata ID"
                   :link="`https://www.wikidata.org/wiki/${item.wikidataData.id}`"
+                  :copyIdOnly
                 />
                 <IdGroup
                   v-if="item.wikidataData.gndId"
                   :id="item.wikidataData.gndId"
                   label="GND ID"
                   :link="`https://d-nb.info/gnd/${item.wikidataData.gndId}`"
+                  :copyIdOnly
                 />
                 <IdGroup
                   v-if="item.wikidataData.mindatLocationId"
                   :id="item.wikidataData.mindatLocationId"
                   label="Mindat Location ID"
                   :link="`https://www.mindat.org/loc-${item.wikidataData.mindatLocationId}.html`"
+                  :copyIdOnly
                 />
                 <IdGroup
                   v-if="item.wikidataData.deweyId"
                   :id="item.wikidataData.deweyId"
                   label="Dewey Dezimalklassifikation"
+                  :copyIdOnly
                 />
               </div>
               <div class="map-box">
@@ -178,11 +245,28 @@ header {
 
 .controls {
   margin-top: 1rem;
+  .boolean-switch-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
 }
 .items {
   .item {
     margin-bottom: 1.5rem;
+    .add-to-list {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      font-size: 1rem;
+      margin: 0.5rem 0;
 
+      img {
+        width: 1.25rem;
+        height: 1.25rem;
+      }
+    }
     .item-content {
       display: flex;
       justify-content: space-between; // Ensures left-right layout with spacing
@@ -320,6 +404,70 @@ header {
   &:hover {
     border-color: #333;
     color: #333;
+  }
+}
+
+// itemslisting
+.listing {
+  .download-list {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .items-list {
+    margin-top: 1rem;
+    padding: .5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    max-width: 100%;
+    overflow-x: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .item {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 0.25rem 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+    .item-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .item-title {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      overflow: hidden;
+
+      .label {
+        font-size: 1rem;
+        font-weight: 500;
+        color: #333;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+
+      .description {
+        font-size: 0.75rem;
+        color: #777;
+        margin-top: 0.2rem;
+        line-height: 1.2;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+    }
+
+    }
   }
 }
 </style>

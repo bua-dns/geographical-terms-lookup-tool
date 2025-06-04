@@ -38,32 +38,26 @@ p {
   margin: 0;
 }
 .app-header {
-  /* 1) Make the header a column flex so children stack vertically */
   display: flex;
   flex-direction: column;
 
   background: #2c3e50;
   color: white;
   padding: 1rem 2rem;
-
-  /* If you want the header width to be constrained (e.g. centered in the viewport),
-     you can wrap .header-main and .info-box-content in another container or apply a max-width here. */
 }
 
 .header-main {
-  /* 2) Keep this as a row flex so <h1> and <nav> sit side by side */
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
   nav {
-    /* 3) Style the nav as needed */
     ul {
       list-style: none;
       padding: 0;
       margin: 0;
       display: flex;
-      gap: 1rem; /* Space between nav items */
+      gap: 1rem; 
     }
     li {
       cursor: pointer; /* Indicate clickable items */

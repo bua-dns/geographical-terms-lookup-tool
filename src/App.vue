@@ -452,31 +452,35 @@ header {
       justify-content: space-between;
 
       .item-title {
-      display: flex;
-      flex-direction: column;
-      flex-grow: 1;
-      overflow: hidden;
-
-      .label {
-        font-size: 1rem;
-        font-weight: 500;
-        color: #333;
-        white-space: nowrap;
-        text-overflow: ellipsis;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
         overflow: hidden;
-      }
 
-      .description {
-        font-size: 0.75rem;
-        color: #777;
-        margin-top: 0.2rem;
-        line-height: 1.2;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        overflow: hidden;
-      }
-    }
+        .label {
+          font-size: 1rem;
+          font-weight: 500;
+          color: #333;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
 
+        .description {
+          font-size: 0.75rem;
+          color: #777;
+          margin-top: 0.2rem;
+          line-height: 1.2;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
+      }
+      .icon-button {
+        flex-shrink: 0; // prevent it from shrinking
+        width: 2.5rem;
+        height: 2.5rem;
+      }
     }
   }
 }

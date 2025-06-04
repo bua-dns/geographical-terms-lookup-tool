@@ -48,9 +48,9 @@ function downloadCSV() {
 
 <template>
   <div class="download-list">
-    <button @click="downloadCSV()" title="Download List">
+    <button @click="downloadCSV()" class="text-icon-button" title="download List as CSV">
       <div class="icon">
-        <img src="../assets/icons/download.svg" alt="download csv" />
+        <img src="../assets/icons/download.svg" alt="download list as CSV" />
       </div>
       
       <span>Liste herunterladen</span>
@@ -65,37 +65,7 @@ function downloadCSV() {
   align-items: center;
   justify-content: start;
   gap: 0.5rem;
-  button {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 0.5rem 0 0.5rem 0;
-    .icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 2rem;
-      height: 2rem;
 
-      border-radius: 4px;
-      transition: background-color 0.3s ease-in-out;
-      &:hover {
-        background-color: #7892ae;
-      }
-    }
-    img {
-      width: 1.25rem;
-      height: 1.25rem;
-    }
-    span {
-      font-size: 1rem;
-      color: var(--color-text);
-      font-weight: 500;
-    }
-  }
 
 }
 

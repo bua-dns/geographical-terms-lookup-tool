@@ -45,6 +45,10 @@ function getItemsDownloadList() {
 function clearSelectedTerm() {
   termsStore.setSelectedTerm(null)
 }
+
+function clearListOfItems() {
+  termsStore.clearItemsList()
+}
 </script>
 
 <template>
@@ -58,6 +62,13 @@ function clearSelectedTerm() {
         <div class="download-controls">
           <CsvDownloader :itemsList="getItemsDownloadList()" filename="sample-data.csv" />
         </div>
+        <button @click="clearListOfItems()" class="text-icon-button" title="delete list of entries">
+          <div class="icon">
+            <img src="./assets/icons/x-circle.svg" alt="delete list of entries" />
+          </div>
+          
+          <span>Liste herunterladen</span>
+        </button>
         <div class="items-list">
           <div class="item" v-for="(item, index) in termsStore.itemsList" :key="index">
             <div class="item-content">
@@ -89,8 +100,8 @@ function clearSelectedTerm() {
         <div class="items">
           <div class="item" v-for="(item, index) in selectedTerm" :key="index">
             <h2>{{ item.locationDescription }}</h2>
-            <div class="add-to-list">
-              <button class="icon-button" @click="addToItemsList(item)">
+            <div class="add-to-list" @click="addToItemsList(item)">
+              <button class="icon-button" >
                 <img src="./assets/icons/shopping-cart.svg" alt="Copy ID" /></button>
               <span>Zur Liste hinzufügen</span>
             </div>
@@ -375,6 +386,7 @@ header {
 
 // itemslisting
 .listing {
+  margin-top: 1rem;
   .download-controls {
 
 

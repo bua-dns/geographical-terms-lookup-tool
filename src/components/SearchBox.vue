@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useTermsStore } from '../stores/useTermsStore.js'
 import { fetchWikidataSearchResults } from '../use/useCallWikidataSearchApi.js'
 
@@ -47,7 +47,7 @@ function resetSearch() {
     <input
       type="text"
       v-model="searchTerm"
-      placeholder="Search Wikidata..."
+      placeholder="Ort, Region, Land ..."
       @click="handleInputClick"
     />
 
@@ -74,6 +74,13 @@ function resetSearch() {
 .search-box {
   position: relative;
   max-width: 22rem;
+  input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+  }
 }
 .suggestions {
   position: absolute;

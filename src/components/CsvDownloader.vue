@@ -11,10 +11,21 @@ const props = defineProps({
   }
 })
 
-function convertToCSV(itemsList) {
-  const headers = Object.keys(itemsList[0]).join(',')
-  const rows = itemsList.map(item => Object.values(item).join(',')).join('\n')
-  return `${headers}\n${rows}`
+function convertToCSV(data) {
+  if (!Array.isArray(data) || data.length === 0) return ''
+
+  const headers = Object.keys(data[0])
+  const csvRows = [
+    headers.join(','), // header row
+    ...data.map(row =>
+      headers.map(field => {
+        const val = row[field] ?? ''
+        const escaped = String(val).replace(/"/g, '""')
+        return `"${escaped}"`
+      }).join(',')
+    )
+  ]
+  return csvRows.join('\r\n')
 }
 
 const csvString = convertToCSV(props.itemsList)

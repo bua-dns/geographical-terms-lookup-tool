@@ -2,13 +2,19 @@
 import { ref, computed } from "vue"
 import SearchBox from './components/SearchBox.vue'
 import { useTermsStore } from './stores/useTermsStore.js'
+import { useMapForCsvDownload } from "./use/useMapForCsvDownload.js"
 import MapView from "./components/MapView.vue"
 import IdGroup from "./components/IdGroup.vue"
 import BooleanSwitch from "./components/BooleanSwitch.vue"
+import CsvDownloader from "./components/CsvDownloader.vue"
 import Header from "./components/Header.vue"
 
 // DEV only:
 const showRawData = ref(false)
+
+const sampleCsv = `geonamesId,locationDescription,lat,lng
+123456,Sample Location,12.34567,34.56789
+789012,Another Location,23.45678,45.67890`
 
 const copyIdOnly = ref(false) // This is used to toggle between copying full URI or just ID
 
@@ -30,12 +36,10 @@ function toggleListItem(item) {
 
 const selectedTerm = computed(() => termsStore.selectedTerm)
 
-function copyToClipboard(text) {
-  navigator.clipboard.writeText(text).then(() => {
-    console.log('Copied:', text)
-  }).catch(err => {
-    console.error('Failed to copy:', err)
-  })
+function getItemsDownloadList() {
+  const mappedData = termsStore.itemsList.map(item => useMapForCsvDownload(item))
+  console.log('mappedData', JSON.stringify(mappedData, null, 2))
+  return mappedData
 }
 
 function clearSelectedTerm() {
@@ -44,53 +48,24 @@ function clearSelectedTerm() {
 </script>
 
 <template>
-  <!-- <header>
-    <h1>Referenzdaten-Lookup: Ortsnamen</h1>
-    <div class="info">
-      <InfoBox>
-      <template #label>
-        <h2>Über dieses Tool</h2>
-      </template>
-
-      <template #content>
-        
-      </template>
-    </InfoBox>
-    </div>
-    
-  </header> -->
   <Header />
   <div class="content-container">
     <aside>
-      <SearchBox/>
+      <SearchBox />
+
       <div class="listing" v-if="termsStore.itemsList.length > 0">
         <h3>Ortsliste zum Export</h3>
-        <div class="download-list">
-          <button
-            class="icon-button"
-            @click="downloadList(item)"
-            title="Download List"
-          >
-            <img src="./assets/icons/download.svg" alt="Remove from list" />
-          </button>
-          <span>Liste herunterladen</span>
+        <div class="download-controls">
+          <CsvDownloader :itemsList="getItemsDownloadList()" filename="sample-data.csv" />
         </div>
         <div class="items-list">
-          <div
-            class="item"
-            v-for="(item, index) in termsStore.itemsList"
-            :key="index"
-          >
+          <div class="item" v-for="(item, index) in termsStore.itemsList" :key="index">
             <div class="item-content">
               <div class="item-title">
                 <span class="label">{{ item.infoLabel }}</span>
                 <span class="description">{{ item.locationDescription }}</span>
               </div>
-              <button
-                class="icon-button"
-                @click="toggleListItem(item)"
-                title="Remove from list"
-              >
+              <button class="icon-button" @click="toggleListItem(item)" title="Remove from list">
                 <img src="./assets/icons/x-circle.svg" alt="Remove from list" />
               </button>
             </div>
@@ -109,13 +84,10 @@ function clearSelectedTerm() {
       <div class="hint" v-if="!selectedTerm">
         Ortsnamen auswählen, um Details anzuzeigen.
       </div>
-      
+
       <div class="selected-term" v-if="selectedTerm">
         <div class="items">
-          <div class="item"
-          v-for="(item, index) in selectedTerm"
-          :key="index"
-          >
+          <div class="item" v-for="(item, index) in selectedTerm" :key="index">
             <h2>{{ item.locationDescription }}</h2>
             <div class="add-to-list">
               <button class="icon-button" @click="addToItemsList(item)">
@@ -125,47 +97,21 @@ function clearSelectedTerm() {
             <div class="item-content">
               <div class="data-box">
                 {{ item.geonamesId }}
-                <IdGroup
-                  v-if="item.geonameId"
-                  :id="item.geonameId"
-                  label="Geonames ID"
-                  :link="`https://www.geonames.org/${item.geonameId}`"
-                  :copyIdOnly
-                />
-                <IdGroup
-                  v-if="item.wikidataData.id"
-                  :id="item.wikidataData.id"
-                  label="Wikidata ID"
-                  :link="`https://www.wikidata.org/wiki/${item.wikidataData.id}`"
-                  :copyIdOnly
-                />
-                <IdGroup
-                  v-if="item.wikidataData.gndId"
-                  :id="item.wikidataData.gndId"
-                  label="GND ID"
-                  :link="`https://d-nb.info/gnd/${item.wikidataData.gndId}`"
-                  :copyIdOnly
-                />
-                <IdGroup
-                  v-if="item.wikidataData.mindatLocationId"
-                  :id="item.wikidataData.mindatLocationId"
+                <IdGroup v-if="item.geonameId" :id="item.geonameId" label="Geonames ID"
+                  :link="`https://www.geonames.org/${item.geonameId}`" :copyIdOnly />
+                <IdGroup v-if="item.wikidataData.id" :id="item.wikidataData.id" label="Wikidata ID"
+                  :link="`https://www.wikidata.org/wiki/${item.wikidataData.id}`" :copyIdOnly />
+                <IdGroup v-if="item.wikidataData.gndId" :id="item.wikidataData.gndId" label="GND ID"
+                  :link="`https://d-nb.info/gnd/${item.wikidataData.gndId}`" :copyIdOnly />
+                <IdGroup v-if="item.wikidataData.mindatLocationId" :id="item.wikidataData.mindatLocationId"
                   label="Mindat Location ID"
-                  :link="`https://www.mindat.org/loc-${item.wikidataData.mindatLocationId}.html`"
-                  :copyIdOnly
-                />
-                <IdGroup
-                  v-if="item.wikidataData.deweyId"
-                  :id="item.wikidataData.deweyId"
-                  label="Dewey Dezimalklassifikation"
-                  :copyIdOnly
-                />
+                  :link="`https://www.mindat.org/loc-${item.wikidataData.mindatLocationId}.html`" :copyIdOnly />
+                <IdGroup v-if="item.wikidataData.deweyId" :id="item.wikidataData.deweyId"
+                  label="Dewey Dezimalklassifikation" :copyIdOnly />
               </div>
               <div class="map-box">
-                <MapView
-                  :lat="Number(item.geonamesData.lat)"
-                  :lng="Number(item.geonamesData.lng)"
-                  :label="item.locationDescription"
-                />
+                <MapView :lat="Number(item.geonamesData.lat)" :lng="Number(item.geonamesData.lng)"
+                  :label="item.locationDescription" />
               </div>
             </div>
           </div>
@@ -179,11 +125,7 @@ function clearSelectedTerm() {
       </div>
 
       <div class="controls" v-if="false">
-        <button
-          v-if="termsStore.selectedTerm"
-          @click="clearSelectedTerm"
-          class="clear-button"
-        >
+        <button v-if="termsStore.selectedTerm" @click="clearSelectedTerm" class="clear-button">
           <img src="./assets/icons/x-circle.svg" alt="Clear Selection" />
           Zurücksetzen
         </button>
@@ -197,36 +139,46 @@ function clearSelectedTerm() {
 @use './assets/styles/main.scss' as *;
 @import 'leaflet/dist/leaflet.css';
 
-main, aside {
+main,
+aside {
   min-height: calc(100vh - 8rem);
 }
-main, aside, header {
+
+main,
+aside,
+header {
   background-color: hsla(0, 0%, 100%, .94);
   padding: 1.25rem;
   border-radius: 4px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
+
 header {
   display: flex;
   justify-content: space-between;
   margin-bottom: 1.0rem;
+
   h1 {
     font-size: 1.75rem;
     margin-bottom: .5rem;
+
     @media screen and (max-width: 768px) {
       font-size: 1.125rem;
     }
   }
+
   .info {
     flex: 0 0 18rem;
     max-width: 18rem;
     margin-left: 1rem;
+
     @media screen and (max-width: 768px) {
       flex: 1;
       max-width: none;
     }
   }
 }
+
 .content-container {
   position: relative;
   display: flex;
@@ -255,15 +207,18 @@ header {
 
 .controls {
   margin: 1rem 0;
+
   .boolean-switch-container {
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
 }
+
 .items {
   .item {
     margin-bottom: 1.5rem;
+
     .add-to-list {
       display: flex;
       align-items: center;
@@ -277,6 +232,7 @@ header {
         height: 1.25rem;
       }
     }
+
     .item-content {
       display: flex;
       justify-content: space-between; // Ensures left-right layout with spacing
@@ -419,12 +375,21 @@ header {
 
 // itemslisting
 .listing {
-  .download-list {
-    display: flex;
-    align-items: center;
-    justify-content: start;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
+  .download-controls {
+
+
+    .icon-button {
+      width: 2.5rem;
+      height: 2.5rem;
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
   }
   .items-list {
     margin-top: 1rem;
@@ -476,6 +441,7 @@ header {
           overflow: hidden;
         }
       }
+
       .icon-button {
         flex-shrink: 0; // prevent it from shrinking
         width: 2.5rem;

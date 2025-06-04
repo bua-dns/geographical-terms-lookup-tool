@@ -54,7 +54,8 @@ function copyToClipboard(text) {
     <button
       @click="copyToClipboard(getCopyContent())"
       class="icon-button"
-      title="Copy Wikidata ID"
+      :title="`Copy ${label}`"
+      :alt="`Copy ${label}`"
     >
       <img src="../assets/icons/copy.svg" alt="Copy ID" />
     </button>

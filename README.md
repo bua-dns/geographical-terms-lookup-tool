@@ -6,7 +6,7 @@ This web-based tool allows users to search for **place names** using a type-ahea
 > [Digitales Netzwerk Sammlungen](https://berlin-university-collections.de/)
 
 💻 A demo version is available at:  
-> [https://bua-dns.github.io/geonames-lookup-tool/](https://bua-dns.github.io/geonames-lookup-tool/)
+> [https://bua-dns.github.io/geonames-lookup-tool/](https://bua-dns.github.io/geographical-terms-lookup-tool/)
 
 ---
 

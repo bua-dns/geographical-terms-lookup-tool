@@ -1,6 +1,5 @@
 export async function useFetchGeonamesDetails(geonameId) {
-  // const baseUrl = 'https://berlin-university-collections.de/'
-  const baseUrl = 'http://localhost:3000'
+  const baseUrl = 'https://berlin-university-collections.de/'
   const url = `${baseUrl}/api/geonamesbyid?geonameId=${encodeURIComponent(geonameId)}`
 
   try {
